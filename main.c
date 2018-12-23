@@ -43,7 +43,7 @@ void find_directions(t_tetris *elem) {
 		c = (ft_strchr_bis(ptr, 35) - ptr) + b;
 		ptr += (c - b);
 		d = (ft_strchr_bis(ptr, 35) - ptr) + c;
-		printf("a = %i | b = %i | c = %i | d = %i\n", a, b, c, d);
+		//printf("a = %i | b = %i | c = %i | d = %i\n", a, b, c, d);
 		if ((elem->r1 = ((((b - (b / 5)) - 1) / 4) + 1)
 					- ((((a - (a / 5)) - 1) / 4) + 1)) == 1)
 			elem->height += 1;
@@ -62,8 +62,8 @@ void find_directions(t_tetris *elem) {
 		if (((elem->c3 = ((((d - (d / 5)) - 1) % 4) + 1) - ((((c - (c / 5))
 									- 1) % 4) + 1)) != 0) && (elem->c3 == 1) && (elem->c2 >= 0))
 			elem->width += 1;
-		printf("#1->2 = (%i;%i) | #2->3 = (%i;%i) | #3->4 = (%i;%i)\n", elem->r1, elem->c1, elem->r2, elem->c2, elem->r3, elem->c3);
-		printf("width is = %d | height is = %d\n\n", elem->width, elem->height);
+		//printf("#1->2 = (%i;%i) | #2->3 = (%i;%i) | #3->4 = (%i;%i)\n", elem->r1, elem->c1, elem->r2, elem->c2, elem->r3, elem->c3);
+		//printf("width is = %d | height is = %d\n\n", elem->width, elem->height);
 	}
 }
 
@@ -278,14 +278,10 @@ int 				solve(t_tetris *pieces, t_map *map)
 							if (map->set[row][col] == '.' && if_tetris_fits(map, row, col, piece))
 							{
 									//printf("YES  : map(%i;%i)\n", row, col);
-									//printf("ok0\n");
 									then_put_it(map, row, col, piece);
-									//printf("ok1\n");
 									//print_map(map);
-									//printf("ok2\n");
 									if (piece->next == NULL || solve(piece->next, map))
 									{
-											//printf("ok last\n");
 											return (1);
 									}
 									else

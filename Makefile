@@ -1,6 +1,6 @@
 NAME = fillit
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -O3 -march=native
 SRCS = main.c
 OBJS = $(SRCS:.c=.o)
 
