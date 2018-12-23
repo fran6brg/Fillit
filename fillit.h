@@ -21,6 +21,13 @@ typedef struct	   s_tetris
   size_t			      content_size;
   struct s_tetris	  *next;
   // à faire enregistrer les 4 sens du tetris chacun dans une var
+	int			r1;
+	int			c1;
+	int			r2;
+	int			c2;
+	int			r3;
+	int			c3;
+
 }				            t_tetris;
 
 #endif

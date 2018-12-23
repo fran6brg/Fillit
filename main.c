@@ -1,6 +1,59 @@
 #include "fillit.h"
 
 // tetris list functions
+
+char	*ft_strchr_bis(const char *s, int c)
+{
+	int		i;
+	char	*sptr;
+
+	i = 0;
+	sptr = (char *)s;
+	while (sptr[++i] != '\0')
+	{
+		if (sptr[i] == (char)c)
+			return (sptr + i);
+	}
+	if ('\0' == (char)c)
+		return (sptr + i);
+	return ((char *)0);
+}
+
+void find_directions(t_tetris *elem) {
+	/* code */
+	int a;
+	int b;
+	int c;
+	int d;
+	char *ptr;
+
+	ptr = (char *)elem->content;
+	if (ft_strchr_bis(ptr, 35))
+	{
+		//printf("\n************\nptr = \n%s\n", ptr);
+		//printf("ptr pour a = \n%s\n", ptr);
+		a = (ft_strchr_bis(ptr, 35) - ptr) + 1;
+		ptr += (a - 1);
+		//printf("ptr pour b = \n%s\n", ptr);
+		b = (ft_strchr_bis(ptr, 35) - ptr) + a;
+		//printf("ptr pour c = \n%s\n", ptr);
+		ptr += (b-a);
+		c = (ft_strchr_bis(ptr, 35) - ptr) + b;
+		//printf("ptr pour d = \n%s\n", ptr);
+		ptr += (c-b);
+		d = (ft_strchr_bis(ptr, 35) - ptr) + c;
+		//printf("ptr = \n%s\n************\n", ptr);
+		printf("a = %i | b = %i | c = %i | d = %i\n", a, b, c, d);
+		elem->r1 = ((((b - (b / 5)) - 1) / 4) + 1) - ((((a - (a / 5)) - 1) / 4) + 1);
+		elem->c1 = ((((b - (b / 5)) - 1) % 4) + 1) - ((((a - (a / 5)) - 1) % 4) + 1);
+		elem->r2 = ((((c - (c / 5)) - 1) / 4) + 1) - ((((b - (b / 5)) - 1) / 4) + 1);
+		elem->c2 = ((((c - (c / 5)) - 1) % 4) + 1) - ((((b - (b / 5)) - 1) % 4) + 1);
+		elem->r3 = ((((d - (d / 5)) - 1) / 4) + 1) - ((((c - (c / 5)) - 1) / 4) + 1);
+		elem->c3 = ((((d - (d / 5)) - 1) % 4) + 1) - ((((c - (c / 5)) - 1) % 4) + 1);
+		printf("1 = (%i;%i) | 2 = (%i;%i) | 3 = (%i;%i)\n", elem->r1, elem->c1, elem->r2, elem->c2, elem->r3, elem->c3);
+	}
+}
+
 t_tetris	*create_tetris_elem(int id, void const *content, size_t content_size)
 {
 	t_tetris *elem;
@@ -19,6 +72,7 @@ t_tetris	*create_tetris_elem(int id, void const *content, size_t content_size)
 		elem->id = id;
 		ft_memcpy(elem->content, content, content_size);
 		elem->content_size = content_size;
+		find_directions(elem);
 	// }
 	elem->next = NULL;
 	return (elem);
@@ -143,6 +197,38 @@ t_map	*create_map_elem(int size)
 	return (map);
 }
 
+// solve
+/*int 				solve(t_tetris *pieces, t_map *map)
+{
+		int row;
+		int col;
+		t_tetris *piece;
+
+		row = -1;
+		piece = *pieces;
+		while (++row <= map->size)
+		{
+				col = -1;
+				while (++col <= map->size)
+				{
+						while(pieces)
+						{
+								if (map->set[row][col] == '.' && it_fit(piece, map, row, col))
+								{
+										put_it(piece, map, row, col);
+										if (solve(*piece->next, map))
+												return (1);
+								}
+								else
+									ft_remove(curr, field);
+						}
+						col++;
+				}
+				row++;
+		}
+		return (0);
+}*/
+
 // display tetris one by one / map
 void				print_pieces(t_tetris *pieces)
 {
@@ -170,6 +256,7 @@ int main(int argc, char **argv)
   int				fd;
   t_tetris	*pieces;
 	t_map			*map;
+	int 			size;
 
   if (argc != 2) // mauvais nbr d'arguments
   {
@@ -184,9 +271,10 @@ int main(int argc, char **argv)
     return (0);
   }
   //print_pieces(pieces); // pour debugg
-	map = create_map_elem(ft_sqrt((count_tetris(pieces)) * 4));
+	size = ft_sqrt((count_tetris(pieces)) * 4);
+	map = create_map_elem(size++);
+	/*while(!solve(pieces, map, 1))
+			map = create_map_elem(size++);*/
 	print_map(map);
-	//solve_this_bitch(pieces, map);
-	//print_map(map);
   return (1);
 }
