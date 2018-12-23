@@ -1,7 +1,6 @@
 #include "fillit.h"
 
 // tetris list functions
-
 char	*ft_strchr_bis(const char *s, int c)
 {
 	int		i;
@@ -9,6 +8,8 @@ char	*ft_strchr_bis(const char *s, int c)
 
 	i = 0;
 	sptr = (char *)s;
+//	if (*sptr == (char)c)
+//		return (sptr);
 	while (sptr[++i] != '\0')
 	{
 		if (sptr[i] == (char)c)
@@ -28,29 +29,50 @@ void find_directions(t_tetris *elem) {
 	char *ptr;
 
 	ptr = (char *)elem->content;
-	if (ft_strchr_bis(ptr, 35))
+	elem->height = 1;
+	elem->width = 1;
+	if (ft_strchr(ptr, 35))
 	{
+		if (ptr[0] == 35)
+			a = 1;
 		//printf("\n************\nptr = \n%s\n", ptr);
-		//printf("ptr pour a = \n%s\n", ptr);
-		a = (ft_strchr_bis(ptr, 35) - ptr) + 1;
+	//	printf("ptr pour a = \n%s\n", ptr);
+		else
+			a = (ft_strchr_bis(ptr, 35) - ptr) + 1;
 		ptr += (a - 1);
-		//printf("ptr pour b = \n%s\n", ptr);
+	//	printf("ptr pour b = \n%s\n", ptr);
 		b = (ft_strchr_bis(ptr, 35) - ptr) + a;
-		//printf("ptr pour c = \n%s\n", ptr);
+	//	printf("ptr pour c = \n%s\n", ptr);
 		ptr += (b - a);
 		c = (ft_strchr_bis(ptr, 35) - ptr) + b;
-		//printf("ptr pour d = \n%s\n", ptr);
+	//	printf("ptr pour d = \n%s\n", ptr);
 		ptr += (c - b);
 		d = (ft_strchr_bis(ptr, 35) - ptr) + c;
-		//printf("ptr = \n%s\n************\n", ptr);
+	//	printf("ptr = \n%s\n************\n", ptr);
 		printf("a = %i | b = %i | c = %i | d = %i\n", a, b, c, d);
-		elem->r1 = ((((b - (b / 5)) - 1) / 4) + 1) - ((((a - (a / 5)) - 1) / 4) + 1);
-		elem->c1 = ((((b - (b / 5)) - 1) % 4) + 1) - ((((a - (a / 5)) - 1) % 4) + 1);
-		elem->r2 = ((((c - (c / 5)) - 1) / 4) + 1) - ((((b - (b / 5)) - 1) / 4) + 1);
-		elem->c2 = ((((c - (c / 5)) - 1) % 4) + 1) - ((((b - (b / 5)) - 1) % 4) + 1);
-		elem->r3 = ((((d - (d / 5)) - 1) / 4) + 1) - ((((c - (c / 5)) - 1) / 4) + 1);
-		elem->c3 = ((((d - (d / 5)) - 1) % 4) + 1) - ((((c - (c / 5)) - 1) % 4) + 1);
+		if ((elem->r1 = ((((b - (b / 5)) - 1) / 4) + 1)
+					- ((((a - (a / 5)) - 1) / 4) + 1)) == 1)
+			elem->height += 1;
+		if ((elem->c1 = ((((b - (b / 5)) - 1) % 4) + 1)
+					- ((((a - (a / 5)) - 1) % 4) + 1)) != 0)
+			elem->width += 1;
+//		printf("width c1 = %d\n", elem->width);
+		if ((elem->r2 = ((((c - (c / 5)) - 1) / 4) + 1)
+					- ((((b - (b / 5)) - 1) / 4) + 1)) == 1)
+			elem->height += 1;
+		if (((elem->c2 = ((((c - (c / 5)) - 1) % 4) + 1) - ((((b - (b / 5))
+									- 1) % 4) + 1)) != 0) && (elem->c1 >= 0))
+			elem->width += 1;
+//		printf("width c2 = %d\n", elem->width);
+		if ((elem->r3 = ((((d - (d / 5)) - 1) / 4) + 1)
+					- ((((c - (c / 5)) - 1) / 4) + 1)) == 1)
+			elem->height += 1;
+		if (((elem->c3 = ((((d - (d / 5)) - 1) % 4) + 1) - ((((c - (c / 5))
+									- 1) % 4) + 1)) != 0) && (elem->c3 == 1) && (elem->c2 >= 0))
+			elem->width += 1;
+//		printf("width c3 = %d\n", elem->width);
 		printf("#1->2 = (%i;%i) | #2->3 = (%i;%i) | #3->4 = (%i;%i)\n", elem->r1, elem->c1, elem->r2, elem->c2, elem->r3, elem->c3);
+		printf("width is = %d | height is = %d\n\n", elem->width, elem->height);
 	}
 }
 
@@ -197,37 +219,104 @@ t_map	*create_map_elem(int size)
 	return (map);
 }
 
+int if_tetris_fits(t_map *map, int row, int col, t_tetris *piece)
+{
+		// printf("fits? map(%i;%i)\n", row, col);
+		// if (map->set[row][col] == '.')
+		// 	printf("ok1\n");
+		// printf("piece->r1 = %i\n", piece->r1);
+		// if ((map->set[row + piece->r1][col + piece->c1]) == '.')
+		// 	printf("ok2\n");
+		if (map->set[row][col] != '.')
+			return (0);
+		row += piece->r1;
+		col += piece->c1;
+		if (map->set[row][col] != '.')
+			return (0);
+		row += piece->r2;
+		col += piece->c2;
+		if (map->set[row][col] != '.')
+			return (0);
+		row += piece->r3;
+		col += piece->c3;
+		if (map->set[row][col] != '.')
+			return (0);
+		return (1);
+		// return((map->set[row][col] == '.'
+		// 			&& map->set[row + piece->r1][col + piece->c1] == '.'
+		// 			&& map->set[row + piece->r2][col + piece->c2] == '.'
+		// 			&& map->set[row + piece->r3][col + piece->c3] == '.') ? 1 : 0);
+}
+
+void then_put_it(t_map *map, int row, int col, t_tetris *piece)
+{
+		map->set[row][col] = (char)(piece->id + 64);
+		row += piece->r1;
+		col += piece->c1;
+		map->set[row][col] = (char)(piece->id + 64);
+		row += piece->r2;
+		col += piece->c2;
+		map->set[row][col] = (char)(piece->id + 64);
+		row += piece->r3;
+		col += piece->c3;
+		map->set[row][col] = (char)(piece->id + 64);
+}
+
+void remove_tetris(t_map *map, int row, int col, t_tetris *piece)
+{
+		map->set[row][col] = '.';
+		row += piece->r1;
+		col += piece->c1;
+		map->set[row][col] = '.';
+		row += piece->r2;
+		col += piece->c2;
+		map->set[row][col] = '.';
+		row += piece->r3;
+		col += piece->c3;
+		map->set[row][col] = '.';
+}
+
+void				print_map(t_map *map)
+{
+	int		i;
+
+	i = 0;
+	while (i < map->size)
+		ft_putendl(map->set[i++]);
+}
+
 // solve
-/*int 				solve(t_tetris *pieces, t_map *map)
+int 				solve(t_tetris *pieces, t_map *map)
 {
 		int row;
 		int col;
 		t_tetris *piece;
 
 		row = -1;
-		piece = *pieces;
-		while (++row <= map->size)
+		piece = pieces;
+		while (++row <= (map->size - piece->height))
 		{
 				col = -1;
-				while (++col <= map->size)
+				while (++col <= (map->size - piece->width))
 				{
-						while(pieces)
-						{
-								if (map->set[row][col] == '.' && it_fit(piece, map, row, col))
-								{
-										put_it(piece, map, row, col);
-										if (solve(*piece->next, map))
-												return (1);
-								}
-								else
-									ft_remove(curr, field);
-						}
-						col++;
+							printf("test %c : map(%i;%i)\n", (char)(piece->id + 64), row, col);
+							if (map->set[row][col] == '.' && if_tetris_fits(map, row, col, piece))
+							{
+									printf("YES  : map(%i;%i)\n", row, col);
+									then_put_it(map, row, col, piece);
+									print_map(map);
+									if (solve(piece->next, map))
+											return (1);
+									else
+									{
+											printf("remove %c : map(%i;%i)\n", (char)(piece->id + 64), row, col);
+											remove_tetris(map, row, col, piece); // faut-il rajouter une var "placé" = 0/1 ?
+									}
+							}
 				}
-				row++;
 		}
 		return (0);
-}*/
+}
 
 // display tetris one by one / map
 void				print_pieces(t_tetris *pieces)
@@ -242,19 +331,10 @@ void				print_pieces(t_tetris *pieces)
   }
 }
 
-void				print_map(t_map *map)
-{
-	int		i;
-
-	i = 0;
-	while (i < map->size)
-		ft_putendl(map->set[i++]);
-}
-
 int main(int argc, char **argv)
 {
-  int				fd;
-  t_tetris	*pieces;
+	int				fd;
+	t_tetris	*pieces;
 	t_map			*map;
 	int 			size;
 
@@ -270,11 +350,12 @@ int main(int argc, char **argv)
     ft_putstr_fd("error\n", 2);
     return (0);
   }
+	pieces = pieces->next;
   //print_pieces(pieces); // pour debugg
 	size = ft_sqrt((count_tetris(pieces)) * 4);
 	map = create_map_elem(size++);
-	/*while(!solve(pieces, map, 1))
-			map = create_map_elem(size++);*/
+	while(!solve(pieces, map))
+			map = create_map_elem(size++);
 	print_map(map);
   return (1);
 }
