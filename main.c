@@ -37,10 +37,10 @@ void find_directions(t_tetris *elem) {
 		//printf("ptr pour b = \n%s\n", ptr);
 		b = (ft_strchr_bis(ptr, 35) - ptr) + a;
 		//printf("ptr pour c = \n%s\n", ptr);
-		ptr += (b-a);
+		ptr += (b - a);
 		c = (ft_strchr_bis(ptr, 35) - ptr) + b;
 		//printf("ptr pour d = \n%s\n", ptr);
-		ptr += (c-b);
+		ptr += (c - b);
 		d = (ft_strchr_bis(ptr, 35) - ptr) + c;
 		//printf("ptr = \n%s\n************\n", ptr);
 		printf("a = %i | b = %i | c = %i | d = %i\n", a, b, c, d);
@@ -50,7 +50,7 @@ void find_directions(t_tetris *elem) {
 		elem->c2 = ((((c - (c / 5)) - 1) % 4) + 1) - ((((b - (b / 5)) - 1) % 4) + 1);
 		elem->r3 = ((((d - (d / 5)) - 1) / 4) + 1) - ((((c - (c / 5)) - 1) / 4) + 1);
 		elem->c3 = ((((d - (d / 5)) - 1) % 4) + 1) - ((((c - (c / 5)) - 1) % 4) + 1);
-		printf("1 = (%i;%i) | 2 = (%i;%i) | 3 = (%i;%i)\n", elem->r1, elem->c1, elem->r2, elem->c2, elem->r3, elem->c3);
+		printf("#1->2 = (%i;%i) | #2->3 = (%i;%i) | #3->4 = (%i;%i)\n", elem->r1, elem->c1, elem->r2, elem->c2, elem->r3, elem->c3);
 	}
 }
 
