@@ -29,7 +29,7 @@ typedef struct	   s_tetris
 	int			c3;
 	int 		width;
 	int 		height;
-
+	int 		r_width;
 }				            t_tetris;
 
 #endif

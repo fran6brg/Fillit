@@ -13,7 +13,7 @@ execute:
 		./$(NAME) text1.$(NAME)
 
 clean:
-	rm -rf $(OBJS)
+		rm -rf $(OBJS)
 
 fclean: clean
 		rm -rf $(NAME)

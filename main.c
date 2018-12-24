@@ -62,6 +62,7 @@ void find_directions(t_tetris *elem) {
 		if (((elem->c3 = ((((d - (d / 5)) - 1) % 4) + 1) - ((((c - (c / 5))
 									- 1) % 4) + 1)) != 0) && (elem->c3 == 1) && (elem->c2 >= 0))
 			elem->width += 1;
+		elem->r_width = (elem->c1 + elem->c2 + elem->c3);
 		//printf("#1->2 = (%i;%i) | #2->3 = (%i;%i) | #3->4 = (%i;%i)\n", elem->r1, elem->c1, elem->r2, elem->c2, elem->r3, elem->c3);
 		//printf("width is = %d | height is = %d\n\n", elem->width, elem->height);
 	}
@@ -115,12 +116,15 @@ void	push_back_tetris(t_tetris **begin_list, int id, void const *content, size_t
 int is_tetri_valid(char *buf)
 {
   int hashtags;
+	//int dots;
   int i;
 
   hashtags = 0;
+	//dots = 0;
   i = -1;
   while (buf[++i])
   {
+		//dots += (buf[i] == '.');
     if ((i + 1) == 21 && buf[i] != '\n' && buf[i] != '\0')
         return (0);
     else if ((i + 1) % 5 == 0 && buf[i] != '\n')
@@ -131,9 +135,13 @@ int is_tetri_valid(char *buf)
             || (i + 1 <= 19 && buf[i + 1] == '#')
             || (i + 5 <= 19 && buf[i + 5] == '#')
             || (i - 5 >= 0 && buf[i - 5] == '#'))
-      hashtags += (buf[i] == '#');
+      {
+				hashtags += (buf[i] == '#');
+			}
   }
-  return ((hashtags == 4 ? 1 : 0));
+	//printf("dots = %i\n", dots);
+	//printf("buf = -\n%s-\n", buf);
+  return (((hashtags == 4 /*&& dots == 12*/) ? 1 : 0));
 }
 
 int parse_input(int fd, t_tetris *pieces)
@@ -148,6 +156,9 @@ int parse_input(int fd, t_tetris *pieces)
   i = 0;
   while ((ret = read(fd, buf, 21)) >= 1)
 	{
+		//printf("ret = %i\n", ret);
+		if (ret < 20)
+			return (0);
     buf[21] = '\0';
     if (is_tetri_valid(buf) && ++i)
     {
@@ -267,19 +278,18 @@ int 				solve(t_tetris *pieces, t_map *map)
 		int col;
 		t_tetris *piece;
 
-		row = -1;
-		piece = pieces;
-		if (piece == NULL)
+		if (!(piece = pieces))
 			return (1);
+		row = -1;
 		while (++row <= (map->size - piece->height))
 		{
 				col = -1;
-				while (++col <= (map->size - piece->width + 1))
+				while (++col <= (map->size - piece->r_width))
 				{
 							//printf("+test %c : map(%i;%i)\n", (char)(piece->id + 64), row, col);
 							if (map->set[row][col] == '.' && if_tetris_fits(map, row, col, piece))
 							{
-									//printf("ok\n");
+									//printf("ok    %c : map(%i;%i)\n", (char)(piece->id + 64), row, col);
 									then_put_it(map, row, col, piece);
 									//print_map(map);
 									if (solve(piece->next, map))
@@ -333,6 +343,8 @@ int main(int argc, char **argv)
   //print_pieces(pieces); // pour debugg
 	size = ft_sqrt((count_tetris(pieces)) * 4);
 	map = create_map_elem(size++);
+	// solve(pieces, map);
+	// printf("stop\n");
 	while(!solve(pieces, map))
 	{
 			//printf("INCREASE SIZE\n");
@@ -342,6 +354,6 @@ int main(int argc, char **argv)
   return (1);
 }
 
-// ./fillit ../../42FileChecker/fillit_checker/correct_file/valid_17 > t1
-// cat ../../42FileChecker/fillit_checker/correct_compare/output_valid_17 > t2
+// ./fillit ../../42FileChecker/fillit_checker/correct_file/valid_11 > t1
+// cat ../../42FileChecker/fillit_checker/correct_compare/output_valid_11 > t2
 // diff t1 t2
