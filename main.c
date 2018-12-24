@@ -269,25 +269,27 @@ int 				solve(t_tetris *pieces, t_map *map)
 
 		row = -1;
 		piece = pieces;
+		if (piece == NULL)
+			return (1);
 		while (++row <= (map->size - piece->height))
 		{
 				col = -1;
-				while (++col <= (map->size - piece->width))
+				while (++col <= (map->size - piece->width + 1))
 				{
-							//printf("test %c : map(%i;%i)\n", (char)(piece->id + 64), row, col);
+							//printf("+test %c : map(%i;%i)\n", (char)(piece->id + 64), row, col);
 							if (map->set[row][col] == '.' && if_tetris_fits(map, row, col, piece))
 							{
-									//printf("YES  : map(%i;%i)\n", row, col);
+									//printf("ok\n");
 									then_put_it(map, row, col, piece);
 									//print_map(map);
-									if (piece->next == NULL || solve(piece->next, map))
+									if (solve(piece->next, map))
 									{
 											return (1);
 									}
 									else
 									{
-											//printf("remove %c : map(%i;%i)\n", (char)(piece->id + 64), row, col);
-											remove_tetris(map, row, col, piece); // faut-il rajouter une var "placé" = 0/1 ?
+											//printf("- rem %c : map(%i;%i)\n", (char)(piece->id + 64), row, col);
+											remove_tetris(map, row, col, piece);
 									}
 							}
 				}
@@ -303,7 +305,7 @@ void				print_pieces(t_tetris *pieces)
   piece = pieces;
 	while (piece)
 	{
-    printf("pieces[%i] = -\n%s-\n", piece->id, piece->content);
+    //printf("pieces[%i] = -\n%s-\n", piece->id, piece->content);
     piece = piece->next;
   }
 }
@@ -324,7 +326,7 @@ int main(int argc, char **argv)
   pieces = create_tetris_elem(0, "start", 5);
   if (!parse_input(fd, pieces)) // si mauvais format
   {
-    ft_putstr_fd("error\n", 2);
+    ft_putstr_fd("error\n", 1);
     return (0);
   }
 	pieces = pieces->next;
@@ -332,7 +334,14 @@ int main(int argc, char **argv)
 	size = ft_sqrt((count_tetris(pieces)) * 4);
 	map = create_map_elem(size++);
 	while(!solve(pieces, map))
+	{
+			//printf("INCREASE SIZE\n");
 			map = create_map_elem(size++);
+	}
 	print_map(map);
   return (1);
 }
+
+// ./fillit ../../42FileChecker/fillit_checker/correct_file/valid_17 > t1
+// cat ../../42FileChecker/fillit_checker/correct_compare/output_valid_17 > t2
+// diff t1 t2
