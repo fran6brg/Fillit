@@ -6,7 +6,7 @@
 #    By: fberger <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/06 17:33:34 by fberger           #+#    #+#              #
-#    Updated: 2018/11/17 00:58:19 by fberger          ###   ########.fr        #
+#    Updated: 2018/12/25 08:52:58 by bihattay         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -14,6 +14,7 @@ CC=gcc
 CFLAGS=-Wall -Wextra -Werror
 NAME=libft.a
 SRCS=ft_atoi.c\
+	ft_sqrt.c\
 	ft_bzero.c\
 	ft_isalnum.c\
 	ft_isalpha.c\

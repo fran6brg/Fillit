@@ -3,7 +3,7 @@
 
 # include <stdio.h>
 # include <fcntl.h>
-# include "libft/libft.h"
+# include "../libft/libft.h"
 
 typedef struct		s_map
 {
@@ -13,9 +13,6 @@ typedef struct		s_map
 
 typedef struct	   s_tetris
 {
-	// int			width;
-	// int			height;
-	// char		value;
   int               id;
   void              *content;
   size_t			      content_size;
@@ -27,9 +24,12 @@ typedef struct	   s_tetris
 	int			c2;
 	int			r3;
 	int			c3;
-	int 		width;
+	// int 		width;
 	int 		height;
 	int 		r_width;
 }				            t_tetris;
+
+t_map					*create_map_elem(int size);
+void					print_map(t_map *map);
 
 #endif

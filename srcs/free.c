@@ -1,16 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_toupper.c                                       :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fberger <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: bihattay <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/10 23:47:20 by fberger           #+#    #+#             */
-/*   Updated: 2018/11/10 23:54:25 by fberger          ###   ########.fr       */
+/*   Created: 2018/12/24 23:20:01 by bihattay          #+#    #+#             */
+/*   Updated: 2018/12/24 23:24:53 by bihattay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int		ft_toupper(int c)
+#include "fillit.h"
+
+void	ft_freelist(t_tetris **head)
 {
-	return ((c >= 'a' && c <= 'z') ? c - 32 : c);
+	t_tetris	*tmp;
+	t_tetris	*curr;
+
+	curr = *head;
+	while (curr)
+	{
+		ft_strdel(curr->content);
+		tmp = curr;
+		curr = curr->next;
+		free(tmp);
+	}
 }
